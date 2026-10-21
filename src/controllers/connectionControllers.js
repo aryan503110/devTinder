@@ -2,16 +2,12 @@ import connectToDB from "../db/db.js";
 import ConnectionRequest from "../models/ConnectionRequest.js";
 import User from "../models/User.js";
 
-
-export const connection = async (req, res) => {
+export const sendConnection = async (req, res) => {
   try {
     await connectToDB();
 
     const user = req.user;
     const { status, touser } = req.params;
-
-    console.log(user._id,"user")
-    console.log(touser,"touser")
 
     const allowedStatus = ["ignore", "interested"];
 
@@ -71,3 +67,43 @@ export const connection = async (req, res) => {
   }
 };
 
+export const reviewConnection = async (req, res) => {
+  try {
+    await connectToDB();
+    const loggedInUser = req.user;
+    const { status, requestId } = req.params;
+
+    const allowedStatus = ["accepted", "rejected"];
+    if (!allowedStatus.includes(status)) {
+      return res.status(400).json({
+        message: "Invalid status",
+      });
+    }
+
+    const connection = await ConnectionRequest.findOne({
+      _id: requestId,
+      toUser: loggedInUser?._id.toString(),
+      status: "interested",
+    });
+
+    if (!connection) {
+      return res.status(400).json({
+        message: "No connection request found",
+      });
+    }
+
+    connection.status = status;
+
+    await connection.save();
+
+    return res.status(201).json({
+      message: `Request ${status}`,
+    });
+  } catch (err) {
+    console.error(err);
+
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};

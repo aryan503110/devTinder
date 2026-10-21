@@ -14,4 +14,7 @@ const userSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
+//compound indexing on first and last name
+userSchema.index({ firstName: 1, lastName: 1 });
+
 export default mongoose.model("User", userSchema);

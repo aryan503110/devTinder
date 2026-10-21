@@ -55,7 +55,7 @@ export const login = async (req, res) => {
 
     const token = await jwt.sign(
       { userId: user._id, email: user.email },
-      "secret",
+      process.env.JWT_SECRET,
     );
 
     res.cookie("token", token);

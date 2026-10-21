@@ -9,7 +9,7 @@ const authMiddleware = async (req, res, next) => {
       return res.status(401).json({ message: "Invalid request" });
     }
 
-    const decoded = jwt.verify(token, "secret");
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     const user = await User.findOne({ _id: decoded.userId });
 
