@@ -5,7 +5,14 @@ export const getProfile = async (req, res) => {
   try {
     await connectToDB();
     const user = req.user;
-    return res.json({ message: "Fecthed User Profile", user: user });
+    return res.json({
+      message: "Fecthed User Profile",
+      user: {
+        userId: user?._id,
+        firstName: user?.firstName,
+        lastName: user?.lastName,
+      },
+    });
   } catch (err) {
     return res.json({ message: "Error", err });
   }
@@ -16,7 +23,7 @@ export const editProfile = async (req, res) => {
     await connectToDB();
 
     const user = req.user;
-    console.log("user",user)
+    console.log("user", user);
     const { firstName, lastName, age, gender, skills, about } = req.body;
 
     const fetchedUser = await User.findByIdAndUpdate(

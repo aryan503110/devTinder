@@ -60,7 +60,14 @@ export const login = async (req, res) => {
 
     res.cookie("token", token);
 
-    return res.json({ message: "User Logged In" });
+    return res.json({
+      message: "User Logged In",
+      data: {
+        userId: user?._id,
+        firstName: user?.firstName,
+        lastName: user?.lastName,
+      },
+    });
   } catch (err) {
     return res.json({ message: "Error", err });
   }
