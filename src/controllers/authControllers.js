@@ -6,8 +6,17 @@ import connectToDB from "../db/db.js";
 export const signUp = async (req, res) => {
   try {
     await connectToDB();
-    const { firstName, lastName, email, password, age, gender, skills, about } =
-      req.body;
+    const {
+      firstName,
+      lastName,
+      email,
+      imageURL,
+      password,
+      age,
+      gender,
+      skills,
+      about,
+    } = req.body;
 
     const existingUser = await User.findOne({ email });
 
@@ -21,6 +30,7 @@ export const signUp = async (req, res) => {
       firstName,
       lastName,
       email,
+      imageURL,
       password: hashedPassword,
       age,
       gender,
@@ -66,6 +76,7 @@ export const login = async (req, res) => {
         userId: user?._id,
         firstName: user?.firstName,
         lastName: user?.lastName,
+        imageURL: user?.imageURL,
       },
     });
   } catch (err) {
